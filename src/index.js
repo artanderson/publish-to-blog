@@ -27,22 +27,24 @@ const main = async () => {
         const github = new git.getOctokit(ghToken);
         const context = git.context;
         const { owner, repo } = context.repo;
-        let secret;
-
-        const medToken = await github.rest.actions.getRepoSecret({
-            owner,
-            repo,
-            secret,
-        });
+        
         const mdFiles = await loadFiles();
+        
         for(let i = 0; i < mdFiles.length; i++){
             let file = await fs.readFileSync(`./${mdFiles[i].filename}`, 'utf8');
             
             let article = matter(file);
+            let secret = article.data.authors;
             let title = article.data.title;
             let slug = article.data.slug;
             let tags = article.data.tags;
             let content = article.content;
+
+            const medToken = await github.rest.actions.getRepoSecret({
+                owner,
+                repo,
+                secret,
+            });
 
             mediumPost(medToken, pubID, content, title, slug, tags);
         }
