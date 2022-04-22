@@ -1,0 +1,27 @@
+{
+  "name": "publish-to-blog",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/artanderson/publish-to-blog.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/artanderson/publish-to-blog/issues"
+  },
+  "homepage": "https://github.com/artanderson/publish-to-blog#readme",
+  "dependencies": {
+    "@actions/core": "^1.6.0",
+    "@actions/github": "^5.0.1",
+    "gray-matter": "^4.0.3",
+    "node-fetch": "^3.2.3"
+  }
+}

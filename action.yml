@@ -1,0 +1,15 @@
+name: 'Publish to Blog'
+description: 'Auto-publish developer blogs to medium'
+inputs:
+  gh_token:
+    description: 'Github token'
+    required: true
+  med_pub_id:
+    description: 'Medium Publication ID'
+    required: true
+outputs:
+  medium_url:
+    description: 'The Medium URL of the published article'
+runs:
+  using: 'node16'
+  main: 'index.js'
