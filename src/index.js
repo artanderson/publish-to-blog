@@ -72,7 +72,6 @@ const main = async () => {
         const orgID = core.getInput('dev_org_id', {required: true});
 
         const github = git.getOctokit(ghToken);
-        const context = git.context;
         
         const mdFiles = await loadFiles(github);
         
@@ -97,7 +96,7 @@ const main = async () => {
             const devToken = process.env[secretDev];
 
             mediumPost(medToken, pubID, content, title, slug, tags);
-            devPost(devToken, orgID, content, title, slug);
+            devPost(devToken, orgID, file, title, slug);
         }
     }
     catch(error){
