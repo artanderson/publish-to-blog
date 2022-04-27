@@ -23849,7 +23849,7 @@ const main = async () => {
         }
 
         for(let i = 0; i < mdFiles.length; i++){
-            let file = await external_fs_.promises.readFileSync(`./${mdFiles[i].filename}`, 'utf8');
+            let file = await external_fs_.promises.readFile(`./${mdFiles[i].filename}`, 'utf8');
             
             let article = gray_matter(file);
             let secretMed = `${(article.data.authors).toUpperCase().split('-').join('_')}_MED`;
