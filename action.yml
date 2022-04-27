@@ -7,6 +7,9 @@ inputs:
   med_pub_id:
     description: 'Medium Publication ID'
     required: true
+  dev_org_id:
+    description: 'Dev.to Orginization ID'
+    required: true  
 outputs:
   medium_url:
     description: 'The Medium URL of the published article'
