@@ -23853,7 +23853,6 @@ const main = async () => {
             
             let article = gray_matter(file);
             let secretMed = `${(article.data.authors).toUpperCase().split('-').join('_')}_MED`;
-            console.log(secretMed);
             let secretDev = `${(article.data.authors).toUpperCase().split('-').join('_')}_DEV`;
             console.log(secretDev);
             let title = article.data.title;
@@ -23861,17 +23860,8 @@ const main = async () => {
             let tags = article.data.tags;
             let content = article.content;
 
-            const medToken = await github.request('GET /repos/{owner}/{repo}/actions/secrets/{secret_name}',{
-                "owner": owner,
-                "repo": repo,
-                "secret_name": secretMed,
-            });
-
-            const devToken = await github.request('GET /repos/{owner}/{repo}/actions/secrets/{secret_name}',{
-                "owner": owner,
-                "repo": repo,
-                "secret_name": secretDev,
-            });
+            const medToken = process.env.find(secret => secret === secretMed);
+            const devToken = process.env.find(secret => secret === secretDev);
 
             mediumPost(medToken, pubID, content, title, slug, tags);
             devPost(devToken, orgID, content, title, slug);
