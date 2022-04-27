@@ -53,11 +53,13 @@ const devPost = async (authToken, orgID, content, title, slug) => {
     
 const loadFiles = async (github) => {
     const { owner, repo } = git.context.repo;
-    const commit = await github.request('GET /repos/{owner}/{repo}/commits/{ref}', {
-        owner,
-        repo,
-        ref: git.context.sha,
-    }).data;
+    const commit = (
+        await github.request('GET /repos/{owner}/{repo}/commits/{ref}', {
+            owner,
+            repo,
+            ref: git.context.sha,
+        })
+    ).data;
     const mdRegex = new RegExp(`blog\/.*\.md`);
     const mdFiles = commit.files.filter((f) => mdRegex.test(f.filename));
     return mdFiles;
