@@ -83,7 +83,7 @@ const main = async () => {
         }
 
         for(let i = 0; i < mdFiles.length; i++){
-            let file = await fs.readFileSync(`./${mdFiles[i].filename}`, 'utf8');
+            let file = await fs.readFile(`./${mdFiles[i].filename}`, 'utf8');
             
             let article = matter(file);
             let secretMed = `${(article.data.authors).toUpperCase().split('-').join('_')}_MED`;
