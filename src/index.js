@@ -95,8 +95,11 @@ const main = async () => {
             const medToken = process.env[secretMed];
             const devToken = process.env[secretDev];
 
-            mediumPost(medToken, pubID, content, title, slug, tags);
-            devPost(devToken, orgID, file, title, slug);
+            //mediumPost(medToken, pubID, content, title, slug, tags);
+            //devPost(devToken, orgID, file, title, slug);
+            console.log(file);
+            console.log(article);
+            console.log(content);
         }
     }
     catch(error){
