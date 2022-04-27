@@ -43,7 +43,7 @@ const devPost = async (authToken, orgID, content, title, slug) => {
             'Content-Type': 'application/json',
             'api-key': authToken,
         },
-        body: {article: article}
+        body: JSON.stringify(article)
     }
 
     const response = await fetch('https://dev.to/api/articles', myInit);
