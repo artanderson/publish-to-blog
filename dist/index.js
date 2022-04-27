@@ -23839,7 +23839,6 @@ const main = async () => {
 
         const github = lib_github.getOctokit(ghToken);
         const context = lib_github.context;
-        const { owner, repo } = context.repo;
         
         const mdFiles = await loadFiles(github);
         
@@ -23860,8 +23859,8 @@ const main = async () => {
             let tags = article.data.tags;
             let content = article.content;
 
-            const medToken = process.env.find(secret => secret === secretMed);
-            const devToken = process.env.find(secret => secret === secretDev);
+            const medToken = process.env[secretMed];
+            const devToken = process.env[secretDev];
 
             mediumPost(medToken, pubID, content, title, slug, tags);
             devPost(devToken, orgID, content, title, slug);
