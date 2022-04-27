@@ -23791,13 +23791,12 @@ const mediumPost = async (authToken, pubID, content, title, slug, tags) => {
     }
 
     const response = await fetch(`https://api.medium.com/v1/publications/${pubID}/posts`, myInit);
-    
-    console.log(response);
+    const data = await response.json();
+    console.log(data);
 }
 
 const devPost = async (authToken, orgID, content, title, slug) => {
     const article = {
-        "title": title,
         "body_markdown": content,
         "canonical_url": `https://developer.aerospike.com/blog/${slug}`,
         "published": false,
@@ -23811,11 +23810,11 @@ const devPost = async (authToken, orgID, content, title, slug) => {
         },
         body: JSON.stringify({article: article})
     }
-    
+
     console.log(myInit);
     const response = await src_fetch('https://dev.to/api/articles', myInit);
-
-    console.log(response);
+    const data = await response.json();
+    console.log(data);
 }
     
 const loadFiles = async (github) => {
