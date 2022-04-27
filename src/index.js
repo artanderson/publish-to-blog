@@ -1,4 +1,5 @@
 import { mediumPost } from './medium.js';
+import { devPost } from './devto.js';
 import core from '@actions/core';
 import * as git from '@actions/github';
 import matter from 'gray-matter';
@@ -23,6 +24,7 @@ const main = async () => {
     try{
         const ghToken = core.getInput('gh_token', {required: true});
         const pubID = core.getInput('med_pub_id', {required: true});
+        const orgID = core.getInput('dev_org_id', {required: true});
 
         const github = new git.getOctokit(ghToken);
         const context = git.context;
@@ -34,7 +36,8 @@ const main = async () => {
             let file = await fs.readFileSync(`./${mdFiles[i].filename}`, 'utf8');
             
             let article = matter(file);
-            let secret = article.data.authors;
+            let secretMed = `${article.data.authors}-Med`;
+            let secretDev = `${article.data.authors}-Dev`;
             let title = article.data.title;
             let slug = article.data.slug;
             let tags = article.data.tags;
@@ -43,10 +46,17 @@ const main = async () => {
             const medToken = await github.rest.actions.getRepoSecret({
                 owner,
                 repo,
-                secret,
+                secretMed,
+            });
+
+            const devToken = await github.rest.actions.getRepoSecret({
+                owner,
+                repo,
+                secretDev,
             });
 
             mediumPost(medToken, pubID, content, title, slug, tags);
+            devPost(devToken, orgID, content, title, slug);
         }
     }
     catch(error){
