@@ -23399,7 +23399,7 @@ const supportedSchemas = new Set(['data:', 'http:', 'https:']);
  * @param   {*} [options_] - Fetch options
  * @return  {Promise<import('./response').default>}
  */
-async function fetch(url, options_) {
+async function src_fetch(url, options_) {
 	return new Promise((resolve, reject) => {
 		// Build request object
 		const request = new Request(url, options_);
@@ -23582,7 +23582,7 @@ async function fetch(url, options_) {
 						}
 
 						// HTTP-redirect fetch step 15
-						resolve(fetch(new Request(locationURL, requestOptions)));
+						resolve(src_fetch(new Request(locationURL, requestOptions)));
 						finalize();
 						return;
 					}
@@ -23800,7 +23800,7 @@ const devPost = async (authToken, orgID, content, title, slug) => {
         "title": title,
         "body_markdown": content,
         "canonical_url": `https://developer.aerospike.com/blog/${slug}`,
-        "publishStatus": false,
+        "published": false,
         "organization_id": orgID
     }
     const myInit = {
@@ -23812,7 +23812,7 @@ const devPost = async (authToken, orgID, content, title, slug) => {
         body: {article: article}
     }
 
-    const response = await fetch('https://dev.to/api/articles', myInit);
+    const response = await src_fetch('https://dev.to/api/articles', myInit);
 
     console.log(response);
 }
@@ -23861,7 +23861,7 @@ const main = async () => {
             const medToken = process.env[secretMed];
             const devToken = process.env[secretDev];
 
-            mediumPost(medToken, pubID, content, title, slug, tags);
+            //mediumPost(medToken, pubID, content, title, slug, tags);
             devPost(devToken, orgID, file, title, slug);
 
         }

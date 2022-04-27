@@ -34,7 +34,7 @@ const devPost = async (authToken, orgID, content, title, slug) => {
         "title": title,
         "body_markdown": content,
         "canonical_url": `https://developer.aerospike.com/blog/${slug}`,
-        "publishStatus": false,
+        "published": false,
         "organization_id": orgID
     }
     const myInit = {
@@ -95,7 +95,7 @@ const main = async () => {
             const medToken = process.env[secretMed];
             const devToken = process.env[secretDev];
 
-            mediumPost(medToken, pubID, content, title, slug, tags);
+            //mediumPost(medToken, pubID, content, title, slug, tags);
             devPost(devToken, orgID, file, title, slug);
 
         }
