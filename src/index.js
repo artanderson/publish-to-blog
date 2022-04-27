@@ -95,17 +95,20 @@ const main = async () => {
             let tags = article.data.tags;
             let content = article.content;
 
-            const medToken = await github.request('GET /repos/{owner}/{repo}/actions/secrets/{secret_name}',{
-                "owner": owner,
-                "repo": repo,
-                "secret_name": secretMed,
-            });
-
-            const devToken = await github.request('GET /repos/{owner}/{repo}/actions/secrets/{secret_name}',{
-                "owner": owner,
-                "repo": repo,
-                "secret_name": secretDev,
-            });
+            const medToken = (
+                await github.request('GET /repos/{owner}/{repo}/actions/secrets/{secret_name}',{
+                    "owner": owner,
+                    "repo": repo,
+                    "secret_name": secretMed,
+                })
+            ).data;
+            const devToken = (
+                await github.request('GET /repos/{owner}/{repo}/actions/secrets/{secret_name}',{
+                    "owner": owner,
+                    "repo": repo,
+                    "secret_name": secretDev,
+                })
+            ).data;
 
             mediumPost(medToken, pubID, content, title, slug, tags);
             devPost(devToken, orgID, content, title, slug);
