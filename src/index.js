@@ -43,7 +43,7 @@ const devPost = async (authToken, orgID, content, title, slug) => {
             'Content-Type': 'application/json',
             'api-key': authToken,
         },
-        body: JSON.stringify(article)
+        body: {article: article}
     }
 
     const response = await fetch('https://dev.to/api/articles', myInit);
@@ -95,11 +95,9 @@ const main = async () => {
             const medToken = process.env[secretMed];
             const devToken = process.env[secretDev];
 
-            //mediumPost(medToken, pubID, content, title, slug, tags);
-            //devPost(devToken, orgID, file, title, slug);
-            console.log(file);
-            console.log(article);
-            console.log(content);
+            mediumPost(medToken, pubID, content, title, slug, tags);
+            devPost(devToken, orgID, file, title, slug);
+
         }
     }
     catch(error){
