@@ -87,7 +87,9 @@ const main = async () => {
             
             let article = matter(file);
             let secretMed = `${(article.data.authors).toUpperCase().split('-').join('_')}_MED`;
+            console.log(secretMed);
             let secretDev = `${(article.data.authors).toUpperCase().split('-').join('_')}_DEV`;
+            console.log(secretMed);
             let title = article.data.title;
             let slug = article.data.slug;
             let tags = article.data.tags;
