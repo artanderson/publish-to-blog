@@ -95,13 +95,13 @@ const main = async () => {
             let tags = article.data.tags;
             let content = article.content;
 
-            const medToken = await github.rest.actions.getRepoSecret({
+            const medToken = await github.request('GET /repos/{owner}/{repo}/actions/secrets/{secret_name}',{
                 owner,
                 repo,
                 secretMed,
             });
 
-            const devToken = await github.rest.actions.getRepoSecret({
+            const devToken = await github.request('GET /repos/{owner}/{repo}/actions/secrets/{secret_name}',{
                 owner,
                 repo,
                 secretDev,
