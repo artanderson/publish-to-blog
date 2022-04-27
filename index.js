@@ -3,7 +3,7 @@ import { devPost } from './devto.js';
 import core from '@actions/core';
 import * as git from '@actions/github';
 import matter from 'gray-matter';
-import { promises as fs } from fs;
+import { promises as fs } from 'fs';
 import fetch from "node-fetch";
 
 const mediumPost = async (authToken, pubID, content, title, slug, tags) => {
