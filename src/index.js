@@ -89,22 +89,22 @@ const main = async () => {
             let secretMed = `${(article.data.authors).toUpperCase().split('-').join('_')}_MED`;
             console.log(secretMed);
             let secretDev = `${(article.data.authors).toUpperCase().split('-').join('_')}_DEV`;
-            console.log(secretMed);
+            console.log(secretDev);
             let title = article.data.title;
             let slug = article.data.slug;
             let tags = article.data.tags;
             let content = article.content;
 
             const medToken = await github.request('GET /repos/{owner}/{repo}/actions/secrets/{secret_name}',{
-                owner,
-                repo,
-                secretMed,
+                "owner": owner,
+                "repo": repo,
+                "secret_name": secretMed,
             });
 
             const devToken = await github.request('GET /repos/{owner}/{repo}/actions/secrets/{secret_name}',{
-                owner,
-                repo,
-                secretDev,
+                "owner": owner,
+                "repo": repo,
+                "secret_name": secretDev,
             });
 
             mediumPost(medToken, pubID, content, title, slug, tags);
