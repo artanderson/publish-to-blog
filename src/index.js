@@ -26,7 +26,7 @@ const mediumPost = async (authToken, pubID, content, title, slug, tags) => {
 
     const response = await fetch(`https://api.medium.com/v1/publications/${pubID}/posts`, myInit);
     
-    return(response);
+    console.log(response);
 }
 
 const devPost = async (authToken, orgID, content, title, slug) => {
@@ -48,7 +48,7 @@ const devPost = async (authToken, orgID, content, title, slug) => {
 
     const response = await fetch('https://dev.to/api/articles', myInit);
 
-    return(response);
+    console.log(response);
 }
     
 const loadFiles = async (github) => {
