@@ -1,5 +1,3 @@
-import { mediumPost } from './medium.js';
-import { devPost } from './devto.js';
 import core from '@actions/core';
 import * as git from '@actions/github';
 import matter from 'gray-matter';
