@@ -45,7 +45,8 @@ const devPost = async (authToken, orgID, content, title, slug) => {
         },
         body: JSON.stringify({article: article})
     }
-
+    
+    console.log(myInit);
     const response = await fetch('https://dev.to/api/articles', myInit);
 
     console.log(response);
