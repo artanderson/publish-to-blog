@@ -69,11 +69,11 @@ const main = async () => {
         const pubID = core.getInput('med_pub_id', {required: true});
         const orgID = core.getInput('dev_org_id', {required: true});
 
-        const github = new git.getOctokit(ghToken);
+        const github = git.getOctokit(ghToken);
         const context = git.context;
         const { owner, repo } = context.repo;
         
-        const mdFiles = await loadFiles();
+        const mdFiles = await loadFiles(github);
         
         if(mdFiles.length === 0){
             console.log('no files to process');
