@@ -4,7 +4,55 @@ import core from '@actions/core';
 import * as git from '@actions/github';
 import matter from 'gray-matter';
 import { promises as fs } from fs;
+import fetch from "node-fetch";
 
+const mediumPost = async (authToken, pubID, content, title, slug, tags) => {
+    const article = {
+        "title": title,
+        "contentFormat": "markdown",
+        "content": content,
+        "canonicalUrl": `https://developer.aerospike.com/blog/${slug}`,
+        "publishStatus": "draft",
+        "tags": tags
+    }
+    const myInit = {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${authToken}`,
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+            'Accept-Charset': 'utf-8'
+        },
+        body: JSON.stringify(article)
+    }
+
+    const response = await fetch(`https://api.medium.com/v1/publications/${pubID}/posts`, myInit);
+    
+    return(response);
+}
+
+const devPost = async (authToken, orgID, content, title, slug) => {
+    const article = {
+        "title": title,
+        "body_markdown": content,
+        "canonical_url": `https://developer.aerospike.com/blog/${slug}`,
+        "publishStatus": false,
+        "organization_id": orgID
+    }
+    const myInit = {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'api-key': authToken,
+        },
+        body: JSON.stringify(article)
+    }
+
+    const response = await fetch('https://dev.to/api/articles', myInit);
+
+    return(response);
+}
+    
 const loadFiles = async (github) => {
     const { owner, repo } = git.context.repo;
     const commit = await github.request('GET /repos/{owner}/{repo}/commits/{ref}', {
@@ -14,9 +62,6 @@ const loadFiles = async (github) => {
     }).data;
     const mdRegex = new RegExp(`blog\/.*\.md`);
     const mdFiles = commit.files.filter((f) => mdRegex.test(f.filename));
-    if(mdFiles.length === 0){
-        core.setFailed('No files found');
-    }
     return mdFiles;
 }
 
@@ -32,6 +77,11 @@ const main = async () => {
         
         const mdFiles = await loadFiles();
         
+        if(mdFiles.length === 0){
+            console.log('no files to process');
+            return 0;
+        }
+
         for(let i = 0; i < mdFiles.length; i++){
             let file = await fs.readFileSync(`./${mdFiles[i].filename}`, 'utf8');
             
