@@ -29,10 +29,13 @@ const mediumPost = async (authToken, pubID, content, title, slug, tags) => {
     console.log(data);
 }
 
-const devPost = async (authToken, orgID, content, title, slug) => {
+const devPost = async (authToken, orgID, content, title, slug, tags) => {
+    tags = tags.map(tag => (tag.split(' ').join('')));
     const article = {
+        "title": title,
         "body_markdown": content,
         "canonical_url": `https://developer.aerospike.com/blog/${slug}`,
+        "tags": tags,
         "published": false,
         "organization_id": orgID
     }
@@ -96,7 +99,7 @@ const main = async () => {
             const devToken = process.env[secretDev];
 
             //mediumPost(medToken, pubID, content, title, slug, tags);
-            devPost(devToken, orgID, file, title, slug);
+            devPost(devToken, orgID, content, title, slug, tags);
 
         }
     }
