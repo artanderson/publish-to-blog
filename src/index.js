@@ -48,7 +48,6 @@ const devPost = async (authToken, orgID, content, title, slug, tags) => {
         body: JSON.stringify({article: article})
     }
 
-    console.log(myInit);
     const response = await fetch('https://dev.to/api/articles', myInit);
     const data = await response.json();
     console.log(data);
@@ -89,7 +88,6 @@ const main = async () => {
             let article = matter(file);
             let secretMed = `${(article.data.authors).toUpperCase().split('-').join('_')}_MED`;
             let secretDev = `${(article.data.authors).toUpperCase().split('-').join('_')}_DEV`;
-            console.log(secretDev);
             let title = article.data.title;
             let slug = article.data.slug;
             let tags = article.data.tags;
@@ -98,7 +96,7 @@ const main = async () => {
             const medToken = process.env[secretMed];
             const devToken = process.env[secretDev];
 
-            //mediumPost(medToken, pubID, content, title, slug, tags);
+            mediumPost(medToken, pubID, content, title, slug, tags);
             devPost(devToken, orgID, content, title, slug, tags);
 
         }
