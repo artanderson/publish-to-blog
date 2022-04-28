@@ -30,6 +30,13 @@ const mediumPost = async (authToken, pubID, content, title, slug, tags) => {
 }
 
 const devPost = async (authToken, orgID, content, title, slug, tags) => {
+    
+    const published = await fetch('https://dev.to/api/articles/me/all?per_page=1000', {method: 'GET', headers: {'api-key': authToken}});
+    const articles = await published.json();
+
+    let idx = articles.findIndex(article => article.title === title);
+    let artID = idx === -1 ? idx : articles[idx].id;
+
     tags = tags.map(tag => (tag.split(' ').join('')));
     const article = {
         "title": title,
@@ -40,7 +47,7 @@ const devPost = async (authToken, orgID, content, title, slug, tags) => {
         "organization_id": orgID
     }
     const myInit = {
-        method: 'POST',
+        method: artID === -1 ? 'POST' : 'PUT',
         headers: {
             'Content-Type': 'application/json',
             'api-key': authToken,
@@ -48,7 +55,7 @@ const devPost = async (authToken, orgID, content, title, slug, tags) => {
         body: JSON.stringify({article: article})
     }
 
-    const response = await fetch('https://dev.to/api/articles', myInit);
+    const response = await fetch(`https://dev.to/api/articles${artID === -1 ? '' : `/${artID}`}`, myInit);
     const data = await response.json();
     console.log(data);
 }
@@ -83,22 +90,26 @@ const main = async () => {
         }
 
         for(let i = 0; i < mdFiles.length; i++){
-            let file = await fs.readFile(`./${mdFiles[i].filename}`, 'utf8');
-            
-            let article = matter(file);
-            let secretMed = `${(article.data.authors).toUpperCase().split('-').join('_')}_MED`;
-            let secretDev = `${(article.data.authors).toUpperCase().split('-').join('_')}_DEV`;
-            let title = article.data.title;
-            let slug = article.data.slug;
-            let tags = article.data.tags;
-            let content = article.content;
-
-            const medToken = process.env[secretMed];
-            const devToken = process.env[secretDev];
-
-            mediumPost(medToken, pubID, content, title, slug, tags);
-            devPost(devToken, orgID, content, title, slug, tags);
-
+            fs.access(`./${mdFiles[i].filename}`, (err) => {
+                if(err){
+                    console.log('File does not exist');
+                }
+                else{
+                    let file = await fs.readFile(`./${mdFiles[i].filename}`, 'utf8');           
+                    let article = matter(file);
+                    let secretMed = `${(article.data.authors).toUpperCase().split('-').join('_')}_MED`;
+                    let secretDev = `${(article.data.authors).toUpperCase().split('-').join('_')}_DEV`;
+                    let title = article.data.title;
+                    let slug = article.data.slug;
+                    let tags = article.data.tags;
+                    let content = article.content;
+                    let medToken = process.env[secretMed];
+                    let devToken = process.env[secretDev];
+        
+                    mediumPost(medToken, pubID, content, title, slug, tags);
+                    devPost(devToken, orgID, content, title, slug, tags);
+                }
+            })
         }
     }
     catch(error){
