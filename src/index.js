@@ -38,6 +38,7 @@ const devPost = async (authToken, orgID, content, title, slug, tags) => {
     let artID = idx === -1 ? idx : articles[idx].id;
 
     tags = tags.map(tag => (tag.split(' ').join('')));
+
     const article = {
         "title": title,
         "body_markdown": content,
@@ -77,8 +78,9 @@ const loadFiles = async (github) => {
 const main = async () => {
     try{
         const ghToken = core.getInput('gh_token', {required: true});
-        const pubID = core.getInput('med_pub_id', {required: true});
-        const orgID = core.getInput('dev_org_id', {required: true});
+        const roleID = core.getInput('role_id', {required: true});
+        const secretID = core.getInput('secret_id', {required: true});
+        const endpoint = core.getInput('endpoint', {required: true});
 
         const github = git.getOctokit(ghToken);
         
@@ -89,27 +91,46 @@ const main = async () => {
             return 0;
         }
 
+        const vault = require("node-vault")({
+            apiVersion: "v1",
+            endpoint: endpoint,
+        });
+
+        const login = await vault.approleLogin({
+            role_id: roleID,
+            secret_id: secretID
+        });
+
+        vault.token = login.auth.client_token;
+
+        let { aerospike } = await vault.read("blog-publish/data/aerospike");
+                    let pubID = aerospike.pub-id;
+                    let orgID = aerospike.org-id;
+
         for(let i = 0; i < mdFiles.length; i++){
+            let fileExists = true;
             fs.access(`./${mdFiles[i].filename}`, (err) => {
                 if(err){
                     console.log('File does not exist');
+                    fileExists = false;
                 }
-                else{
-                    let file = await fs.readFile(`./${mdFiles[i].filename}`, 'utf8');           
-                    let article = matter(file);
-                    let secretMed = `${(article.data.authors).toUpperCase().split('-').join('_')}_MED`;
-                    let secretDev = `${(article.data.authors).toUpperCase().split('-').join('_')}_DEV`;
-                    let title = article.data.title;
-                    let slug = article.data.slug;
-                    let tags = article.data.tags;
-                    let content = article.content;
-                    let medToken = process.env[secretMed];
-                    let devToken = process.env[secretDev];
-        
-                    mediumPost(medToken, pubID, content, title, slug, tags);
-                    devPost(devToken, orgID, content, title, slug, tags);
-                }
-            })
+            });
+            if(fileExists){
+                let file = await fs.readFile(`./${mdFiles[i].filename}`, 'utf8');           
+                let article = matter(file);
+
+                let { author } = await vault.read(`blog-publish/data/${article.data.authors}`);
+                let medToken = author.medium-key;
+                let devToken = author.devto.key;
+
+                let title = article.data.title;
+                let slug = article.data.slug;
+                let tags = article.data.tags;
+                let content = article.content;
+
+                mediumPost(medToken, pubID, content, title, slug, tags);
+                devPost(devToken, orgID, content, title, slug, tags);
+            }
         }
     }
     catch(error){

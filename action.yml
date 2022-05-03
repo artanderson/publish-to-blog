@@ -4,12 +4,15 @@ inputs:
   gh_token:
     description: 'Github token'
     required: true
-  med_pub_id:
-    description: 'Medium Publication ID'
+  role_id:
+    description: 'Vault Role ID'
     required: true
-  dev_org_id:
-    description: 'Dev.to Orginization ID'
-    required: true  
+  secret_id:
+    description: 'Vault Secret ID'
+    required: true
+  endpoint:
+    description: 'Vault Endpoint'
+    required: true      
 outputs:
   medium_url:
     description: 'The Medium URL of the published article'
