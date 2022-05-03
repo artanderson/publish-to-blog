@@ -105,7 +105,8 @@ const main = async () => {
 
         vault.token = login.auth.client_token;
 
-        let { aerospike } = await vault.read("blog-publish/data/aerospike");
+        let aerospike = await vault.read("blog-publish/data/aerospike");
+        console.log(aerospike);
         let pubID = aerospike.data.pub-id;
         let orgID = aerospike.data.org-id;
 
