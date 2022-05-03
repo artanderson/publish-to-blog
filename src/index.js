@@ -105,10 +105,10 @@ const main = async () => {
 
         vault.token = login.auth.client_token;
 
-        let aerospike = await vault.read("blog-publish/data/aerospike");
+        let { aerospike } = await vault.read("blog-publish/data/aerospike");
         console.log(aerospike);
-        let pubID = aerospike.data.data.pub-id;
-        let orgID = aerospike.data.data.org-id;
+        let pubID = aerospike.data.pub_id;
+        let orgID = aerospike.data.org_id;
 
         for(let i = 0; i < mdFiles.length; i++){
             let fileExists = true;
@@ -123,8 +123,8 @@ const main = async () => {
                 let article = matter(file);
 
                 let { author } = await vault.read(`blog-publish/data/${article.data.authors}`);
-                let medToken = author.data.data.medium-key;
-                let devToken = author.data.data.devto-key;
+                let medToken = author.data.medium_key;
+                let devToken = author.data.devto_key;
 
                 let title = article.data.title;
                 let slug = article.data.slug;
