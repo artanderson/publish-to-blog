@@ -112,12 +112,11 @@ const main = async () => {
 
         for(let i = 0; i < mdFiles.length; i++){
             let fileExists = true;
-            await fs.promises.access(`./${mdFiles[i].filename}`, (err) => {
-                if(err){
+            await fs.promises.access(`./${mdFiles[i].filename}`)
+                .catch(err => {
                     console.log('File does not exist');
                     fileExists = false;
-                }
-            });
+                });
             if(fileExists){
                 let file = await fs.promises.readFile(`./${mdFiles[i].filename}`, 'utf8');           
                 let article = matter(file);
