@@ -111,28 +111,22 @@ const main = async () => {
         let orgID = aerospike.data.data.org_id;
 
         for(let i = 0; i < mdFiles.length; i++){
-            let fileExists = true;
-            await fs.promises.access(`./${mdFiles[i].filename}`)
-                .catch(err => {
-                    console.log('File does not exist');
-                    fileExists = false;
-                });
-            if(fileExists){
-                let file = await fs.promises.readFile(`./${mdFiles[i].filename}`, 'utf8');           
-                let article = matter(file);
 
-                let author = await vault.read(`blog-publish/data/${article.data.authors}`);
-                let medToken = author.data.data.medium_key;
-                let devToken = author.data.data.devto_key;
+            let file = await fs.promises.readFile(`./${mdFiles[i].filename}`, 'utf8');           
+            let article = matter(file);
 
-                let title = article.data.title;
-                let slug = article.data.slug;
-                let tags = article.data.tags;
-                let content = article.content;
+            let author = await vault.read(`blog-publish/data/${article.data.authors}`);
+            let medToken = author.data.data.medium_key;
+            let devToken = author.data.data.devto_key;
 
-                mediumPost(medToken, pubID, content, title, slug, tags);
-                devPost(devToken, orgID, content, title, slug, tags);
-            }
+            let title = article.data.title;
+            let slug = article.data.slug;
+            let tags = article.data.tags;
+            let content = article.content;
+
+            mediumPost(medToken, pubID, content, title, slug, tags);
+            devPost(devToken, orgID, content, title, slug, tags);
+        
         }
     }
     catch(error){
