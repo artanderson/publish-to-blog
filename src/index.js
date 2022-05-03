@@ -1,10 +1,10 @@
 import { createRequire } from 'module'
 const require = createRequire(import.meta.url);
 
-const matter = require('gray-matter');
+const matter = import('gray-matter');
 const fetch = import('node-fetch');
-const core = require('@actions/core');
-const git = require('@actions/github');
+const core = import('@actions/core');
+const git = import('@actions/github');
 const fs = require('fs');
 const vault = require('node-vault')({
     apiVersion: "v1",
