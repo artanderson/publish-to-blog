@@ -95,6 +95,7 @@ const main = async () => {
         const vault = require("node-vault")({
             apiVersion: "v1",
             endpoint: endpoint,
+            namespace: 'admin'
         });
         
         const login = await vault.approleLogin({
