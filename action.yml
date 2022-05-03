@@ -18,4 +18,4 @@ outputs:
     description: 'The Medium URL of the published article'
 runs:
   using: 'node16'
-  main: 'dist/index.js'
+  main: 'src/index.js'

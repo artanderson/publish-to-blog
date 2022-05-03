@@ -4,8 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "node dist/index.js",
-    "build": "npx webpack"
+    "test": "node src/index.js"
   },
   "repository": {
     "type": "git",
@@ -22,7 +21,7 @@
     "@actions/core": "^1.6.0",
     "@actions/github": "^5.0.1",
     "gray-matter": "^4.0.3",
-    "node-fetch": "^3.2.3",
+    "node-fetch": "^2.6.7",
     "node-vault": "^0.9.22"
   },
   "devDependencies": {

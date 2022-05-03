@@ -26,8 +26,7 @@ const mediumPost = async (authToken, pubID, content, title, slug, tags) => {
     }
 
     const response = await fetch(`https://api.medium.com/v1/publications/${pubID}/posts`, myInit);
-    const data = await response.json();
-    console.log(data);
+    console.log(response);
 }
 
 const devPost = async (authToken, orgID, content, title, slug, tags) => {
@@ -58,8 +57,7 @@ const devPost = async (authToken, orgID, content, title, slug, tags) => {
     }
 
     const response = await fetch(`https://dev.to/api/articles${artID === -1 ? '' : `/${artID}`}`, myInit);
-    const data = await response.json();
-    console.log(data);
+    console.log(response);
 }
     
 const loadFiles = async (github) => {
@@ -106,7 +104,6 @@ const main = async () => {
         vault.token = login.auth.client_token;
 
         let aerospike = await vault.read("blog-publish/data/aerospike");
-        console.log(aerospike);
         let pubID = aerospike.data.data.pub_id;
         let orgID = aerospike.data.data.org_id;
 
