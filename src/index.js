@@ -97,18 +97,18 @@ const main = async () => {
             endpoint: endpoint,
             namespace: 'admin'
         });
-        console.log('connected');
+
         const login = await vault.approleLogin({
             role_id: roleID,
             secret_id: secretID
         });
-        console.log('logged in');
+
         vault.token = login.auth.client_token;
-        console.log('token acquired');
+
         let { aerospike } = await vault.read("blog-publish/data/aerospike");
-        let pubID = aerospike.pub-id;
-        let orgID = aerospike.org-id;
-        console.log('publishing ids acquired');
+        let pubID = aerospike.data.pub-id;
+        let orgID = aerospike.data.org-id;
+
         for(let i = 0; i < mdFiles.length; i++){
             let fileExists = true;
             await fs.promises.access(`./${mdFiles[i].filename}`, (err) => {
@@ -122,8 +122,8 @@ const main = async () => {
                 let article = matter(file);
 
                 let { author } = await vault.read(`blog-publish/data/${article.data.authors}`);
-                let medToken = author.medium-key;
-                let devToken = author.devto.key;
+                let medToken = author.data.medium-key;
+                let devToken = author.data.devto-key;
 
                 let title = article.data.title;
                 let slug = article.data.slug;
