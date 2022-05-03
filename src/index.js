@@ -1,8 +1,15 @@
+import { createRequire } from 'module'
+const require = createRequire(import.meta.url);
+
 const matter = require('gray-matter');
 const fetch = import('node-fetch');
 const core = require('@actions/core');
 const git = require('@actions/github');
 const fs = require('fs');
+const vault = require('node-vault')({
+    apiVersion: "v1",
+    endpoint: endpoint,
+});
 
 const mediumPost = async (authToken, pubID, content, title, slug, tags) => {
     const article = {
@@ -90,11 +97,6 @@ const main = async () => {
             console.log('no files to process');
             return 0;
         }
-
-        const vault = require('node-vault')({
-            apiVersion: "v1",
-            endpoint: endpoint,
-        });
 
         const login = await vault.approleLogin({
             role_id: roleID,
