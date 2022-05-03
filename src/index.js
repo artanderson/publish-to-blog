@@ -1,15 +1,9 @@
-import matter from 'gray-matter';
-import fetch from 'node-fetch';
-import core from '@actions/core';
-import * as git from '@actions/github';
-import { promises as fs } from 'fs';
-import { createRequire } from 'module'
-const require = createRequire(import.meta.url);
+const matter = require('gray-matter');
+const fetch = require('node-fetch');
+const core = require('@actions/core');
+const git = require('@actions/github');
+const fs = require('fs');
 
-const vault = require('node-vault')({
-    apiVersion: "v1",
-    endpoint: endpoint,
-});
 
 const mediumPost = async (authToken, pubID, content, title, slug, tags) => {
     const article = {
@@ -97,7 +91,12 @@ const main = async () => {
             console.log('no files to process');
             return 0;
         }
-
+        
+        const vault = require("node-vault")({
+            apiVersion: "v1",
+            endpoint: 'endpoint',
+        });
+        
         const login = await vault.approleLogin({
             role_id: roleID,
             secret_id: secretID
@@ -111,14 +110,14 @@ const main = async () => {
 
         for(let i = 0; i < mdFiles.length; i++){
             let fileExists = true;
-            await fs.access(`./${mdFiles[i].filename}`, (err) => {
+            await fs.promises.access(`./${mdFiles[i].filename}`, (err) => {
                 if(err){
                     console.log('File does not exist');
                     fileExists = false;
                 }
             });
             if(fileExists){
-                let file = await fs.readFile(`./${mdFiles[i].filename}`, 'utf8');           
+                let file = await fs.promises.readFile(`./${mdFiles[i].filename}`, 'utf8');           
                 let article = matter(file);
 
                 let { author } = await vault.read(`blog-publish/data/${article.data.authors}`);
