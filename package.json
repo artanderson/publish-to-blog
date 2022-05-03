@@ -4,8 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "node dist/index.js",
-    "build": "npx webpack"
+    "test": "node src/index.js"
   },
   "repository": {
     "type": "git",

@@ -1,5 +1,5 @@
 const matter = require('gray-matter');
-const fetch = require('node-fetch');
+const fetch = import('node-fetch');
 const core = require('@actions/core');
 const git = require('@actions/github');
 const fs = require('fs');
