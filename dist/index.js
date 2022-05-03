@@ -23796,7 +23796,15 @@ const mediumPost = async (authToken, pubID, content, title, slug, tags) => {
 }
 
 const devPost = async (authToken, orgID, content, title, slug, tags) => {
+    
+    const published = await fetch('https://dev.to/api/articles/me/all?per_page=1000', {method: 'GET', headers: {'api-key': authToken}});
+    const articles = await published.json();
+
+    let idx = articles.findIndex(article => article.title === title);
+    let artID = idx === -1 ? idx : articles[idx].id;
+
     tags = tags.map(tag => (tag.split(' ').join('')));
+
     const article = {
         "title": title,
         "body_markdown": content,
@@ -23806,7 +23814,7 @@ const devPost = async (authToken, orgID, content, title, slug, tags) => {
         "organization_id": orgID
     }
     const myInit = {
-        method: 'POST',
+        method: artID === -1 ? 'POST' : 'PUT',
         headers: {
             'Content-Type': 'application/json',
             'api-key': authToken,
@@ -23814,7 +23822,7 @@ const devPost = async (authToken, orgID, content, title, slug, tags) => {
         body: JSON.stringify({article: article})
     }
 
-    const response = await fetch('https://dev.to/api/articles', myInit);
+    const response = await fetch(`https://dev.to/api/articles${artID === -1 ? '' : `/${artID}`}`, myInit);
     const data = await response.json();
     console.log(data);
 }
@@ -23836,8 +23844,9 @@ const loadFiles = async (github) => {
 const main = async () => {
     try{
         const ghToken = core.getInput('gh_token', {required: true});
-        const pubID = core.getInput('med_pub_id', {required: true});
-        const orgID = core.getInput('dev_org_id', {required: true});
+        const roleID = core.getInput('role_id', {required: true});
+        const secretID = core.getInput('secret_id', {required: true});
+        const endpoint = core.getInput('endpoint', {required: true});
 
         const github = lib_github.getOctokit(ghToken);
         
@@ -23848,23 +23857,46 @@ const main = async () => {
             return 0;
         }
 
+        const vault = require("node-vault")({
+            apiVersion: "v1",
+            endpoint: endpoint,
+        });
+
+        const login = await vault.approleLogin({
+            role_id: roleID,
+            secret_id: secretID
+        });
+
+        vault.token = login.auth.client_token;
+
+        let { aerospike } = await vault.read("blog-publish/data/aerospike");
+                    let pubID = aerospike.pub-id;
+                    let orgID = aerospike.org-id;
+
         for(let i = 0; i < mdFiles.length; i++){
-            let file = await external_fs_.promises.readFile(`./${mdFiles[i].filename}`, 'utf8');
-            
-            let article = gray_matter(file);
-            let secretMed = `${(article.data.authors).toUpperCase().split('-').join('_')}_MED`;
-            let secretDev = `${(article.data.authors).toUpperCase().split('-').join('_')}_DEV`;
-            let title = article.data.title;
-            let slug = article.data.slug;
-            let tags = article.data.tags;
-            let content = article.content;
+            let fileExists = true;
+            external_fs_.promises.access(`./${mdFiles[i].filename}`, (err) => {
+                if(err){
+                    console.log('File does not exist');
+                    fileExists = false;
+                }
+            });
+            if(fileExists){
+                let file = await external_fs_.promises.readFile(`./${mdFiles[i].filename}`, 'utf8');           
+                let article = gray_matter(file);
 
-            const medToken = process.env[secretMed];
-            const devToken = process.env[secretDev];
+                let { author } = await vault.read(`blog-publish/data/${article.data.authors}`);
+                let medToken = author.medium-key;
+                let devToken = author.devto.key;
 
-            mediumPost(medToken, pubID, content, title, slug, tags);
-            devPost(devToken, orgID, content, title, slug, tags);
+                let title = article.data.title;
+                let slug = article.data.slug;
+                let tags = article.data.tags;
+                let content = article.content;
 
+                mediumPost(medToken, pubID, content, title, slug, tags);
+                devPost(devToken, orgID, content, title, slug, tags);
+            }
         }
     }
     catch(error){
@@ -23872,6 +23904,5 @@ const main = async () => {
     }
 }
 main();
-
 })();
 
