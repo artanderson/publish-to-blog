@@ -1,9 +1,10 @@
-const matter = require('gray-matter');
-const fetch = require('node-fetch');
-const core = require('@actions/core');
-const git = require('@actions/github');
-const fs = require('fs');
-
+import matter from 'gray-matter';
+import fetch from 'node-fetch';
+import core from '@actions/core';
+import * as git from '@actions/github';
+import {promises as fs} from 'fs';
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
 
 const mediumPost = async (authToken, pubID, content, title, slug, tags) => {
     const article = {
