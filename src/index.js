@@ -3,7 +3,9 @@ import * as git from '@actions/github';
 import matter from 'gray-matter';
 import { promises as fs } from 'fs';
 import fetch from "node-fetch";
-import NodeVault from 'node-vault';
+import { createRequire } from 'module';
+
+const require = createRequire(import.meta.url);
 
 const mediumPost = async (authToken, pubID, content, title, slug, tags) => {
     const article = {
@@ -92,7 +94,7 @@ const main = async () => {
             return 0;
         }
 
-        const vault = new NodeVault({
+        const vault = require("node-vault")({
             apiVersion: "v1",
             endpoint: endpoint,
         });
