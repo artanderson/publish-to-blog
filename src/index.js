@@ -27,7 +27,8 @@ const mediumPost = async (authToken, pubID, content, title, slug, tags) => {
     }
 
     const response = await fetch(`https://api.medium.com/v1/publications/${pubID}/posts`, myInit);
-    console.log(response);
+    const data = await response.json();
+    console.log(data);
 }
 
 const devPost = async (authToken, orgID, content, title, slug, tags) => {
@@ -39,6 +40,10 @@ const devPost = async (authToken, orgID, content, title, slug, tags) => {
     let artID = idx === -1 ? idx : articles[idx].id;
 
     tags = tags.map(tag => (tag.split(' ').join('')));
+
+    if(tags.length > 8){
+        tags.length = 8;
+    }
 
     const article = {
         "title": title,
@@ -58,7 +63,8 @@ const devPost = async (authToken, orgID, content, title, slug, tags) => {
     }
 
     const response = await fetch(`https://dev.to/api/articles${artID === -1 ? '' : `/${artID}`}`, myInit);
-    console.log(response);
+    const data = await response.json();
+    console.log(data);
 }
     
 const loadFiles = async (github) => {
