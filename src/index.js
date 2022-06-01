@@ -41,8 +41,8 @@ const devPost = async (authToken, orgID, content, title, slug, tags) => {
 
     tags = tags.map(tag => (tag.split(' ').join('')));
 
-    if(tags.length > 8){
-        tags.length = 8;
+    if(tags.length > 4){
+        tags.length = 4;
     }
 
     const article = {
