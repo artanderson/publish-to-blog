@@ -76,7 +76,7 @@ const loadFiles = async (github) => {
             ref: git.context.sha,
         })
     ).data;
-    const mdRegex = new RegExp(`blog\/.*\.md`);
+    const mdRegex = new RegExp(`blog\/[^\/]+\.md`);
     const mdFiles = commit.files.filter((f) => mdRegex.test(f.filename));
     return mdFiles;
 }
